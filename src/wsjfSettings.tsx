@@ -72,6 +72,9 @@ export class Settings {
                     case "effort":
                         that._selectedFields.effortField = fieldReferenceName;
                         break;
+                    case "costOfDelay":
+                        that._selectedFields.costOfDelay = fieldReferenceName;
+                        break;
                     case "wsjf":
                         that._selectedFields.wsjfField = fieldReferenceName;
                         break;
@@ -144,6 +147,7 @@ export class Settings {
                         tcField: "Microsoft.VSTS.Common.TimeCriticality",
                         rvField: null,
                         effortField: "Microsoft.VSTS.Scheduling.Effort",
+                        costOfDelay: null,
                         wsjfField: null
                     };
                 }
@@ -153,6 +157,7 @@ export class Settings {
                     Controls.create(Combo, tcContainer, this.getComboOptions("timeCriticality", fieldList, this._selectedFields.tcField));
                     Controls.create(Combo, rvContainer, this.getComboOptions("rroevalue", fieldList, this._selectedFields.rvField));
                     Controls.create(Combo, effortContainer, this.getComboOptions("effort", fieldList, this._selectedFields.effortField));
+                    Controls.create(Combo, wsjfContainer, this.getComboOptions("costOfDelay", fieldList, this._selectedFields.costOfDelay));
                     Controls.create(Combo, wsjfContainer, this.getComboOptions("wsjf", fieldList, this._selectedFields.wsjfField));
                     this.updateSaveButton();
 

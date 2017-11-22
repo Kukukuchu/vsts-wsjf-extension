@@ -4,5 +4,6 @@ export interface StoredFieldReferences {
     tcField: string,
     rvField: string,
     effortField: string,
+    costOfDelay: string,
     wsjfField: string
 }

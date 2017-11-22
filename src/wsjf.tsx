@@ -32,6 +32,7 @@ function updateWSJFOnForm(storedFields:StoredFieldReferences) {
             var matchingTimeCriticalityFields = fields.filter(field => field.referenceName === storedFields.tcField);
             var matchrvalueFields = fields.filter(field => field.referenceName === storedFields.rvField);
             var matchingEffortFields = fields.filter(field => field.referenceName === storedFields.effortField); 
+            var matchingCostOfDelayFields = fields.filter(field => field.referenceName === storedFields.costOfDelay); 
             var matchingWSJFFields = fields.filter(field => field.referenceName === storedFields.wsjfField);
 
             //If this work item type has WSJF, then update WSJF
@@ -66,6 +67,34 @@ function updateWSJFOnForm(storedFields:StoredFieldReferences) {
                     service.setFieldValue(storedFields.wsjfField, wsjf);
                 });
             }
+
+            // if work item has cost of delay field, update it 
+            if ((matchingBusinessValueFields.length > 0) &&
+                (matchingTimeCriticalityFields.length > 0) &&
+                (matchrvalueFields.length > 0) &&
+                (matchingCostOfDelayFields.length > 0)){
+                    service.getFieldValues([storedFields.bvField, storedFields.tcField, storedFields.rvField]).then((values) => {
+                        
+                        var businessValue  = 0;
+                        if (values[storedFields.bvField]) {
+                            businessValue += +values[storedFields.bvField];
+                        }
+                        
+                        var timeCriticality = 0;
+                        if (values[storedFields.tcField]) {
+                            timeCriticality += +values[storedFields.tcField];
+                        }
+                        
+                        var rroevalue = 0;
+                        if (values[storedFields.rvField]) {
+                            rroevalue += +values[storedFields.rvField];
+                        }
+
+                        var costOfDelay = (businessValue + timeCriticality + rroevalue);
+
+                        service.setFieldValue(storedFields.costOfDelay, costOfDelay);
+                    });
+            }
         });
     });
 }
@@ -76,6 +105,7 @@ function updateWSJFOnGrid(workItemId, storedFields:StoredFieldReferences):IPromi
         storedFields.tcField,
         storedFields.rvField,
         storedFields.effortField,
+        storedFields.costOfDelay,
         storedFields.wsjfField
     ];
 
@@ -83,26 +113,35 @@ function updateWSJFOnGrid(workItemId, storedFields:StoredFieldReferences):IPromi
 
     var client = WIT_Client.getClient();
     client.getWorkItem(workItemId, wsjfFields).then((workItem: Contracts.WorkItem) => {
-        if (storedFields.wsjfField !== undefined) {     
+        if (storedFields.wsjfField !== undefined && storedFields.costOfDelay !== undefined) {     
             var businessValue = +workItem.fields[storedFields.bvField];
             var timeCriticality = +workItem.fields[storedFields.tcField];
             var rroevalue = +workItem.fields [storedFields.rvField];
             var effort = +workItem.fields[storedFields.effortField];
 
+            var costOfDelay = businessValue + timeCriticality + rroevalue;
+
             var wsjf = 0;
             if (effort > 0) {
-                wsjf = (businessValue + timeCriticality + rroevalue)/effort;
+                wsjf = costOfDelay/effort;
             }
 
-            var document = [{
-                from: null,
-                op: "add",
-                path: '/fields/' + storedFields.wsjfField,
-                value: wsjf
-            }];
+            var document = [
+                {
+                    from: null,
+                    op: "add",
+                    path: '/fields/' + storedFields.wsjfField,
+                    value: wsjf
+                },
+                {
+                    op: "add",
+                    path: '/fields/' + storedFields.costOfDelay,
+                    value: costOfDelay
+                }
+            ];
 
             // Only update the work item if the WSJF has changed
-            if (wsjf != workItem.fields[storedFields.wsjfField]) {
+            if (wsjf != workItem.fields[storedFields.wsjfField] || costOfDelay != workItem.fields[storedFields.costOfDelay]) {
                 client.updateWorkItem(document, workItemId).then((updatedWorkItem:Contracts.WorkItem) => {
                     deferred.resolve(updatedWorkItem);
                 });
@@ -113,7 +152,7 @@ function updateWSJFOnGrid(workItemId, storedFields:StoredFieldReferences):IPromi
         }
         else
         {
-            deferred.reject("Unable to calculate WSJF, please configure fields on the collection settings page.");
+            deferred.reject("Unable to calculate WSJF or Cost of Delay, please configure fields on the collection settings page.");
         }
     });
 
@@ -160,7 +199,8 @@ var contextProvider = (context) => {
     return {
         execute: function(args) {
             GetStoredFields().then((storedFields:StoredFieldReferences) => {
-                if (storedFields && storedFields.bvField && storedFields.effortField && storedFields.tcField && storedFields.rvField && storedFields.wsjfField) {
+                if (storedFields && storedFields.bvField && storedFields.effortField && storedFields.tcField 
+                    && storedFields.rvField && storedFields.costOfDelay && storedFields.wsjfField) {
                     var workItemIds = args.workItemIds;
                     var promises = [];
                     $.each(workItemIds, function(index, workItemId) {
