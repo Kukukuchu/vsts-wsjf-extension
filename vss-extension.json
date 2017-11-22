@@ -1,11 +1,12 @@
 {
     "manifestVersion": 1,
-    "version": "1.0.8",
-    "name": "WSJF (Weighted Shortest Job First)",
+    "version": "1.1.0",
+    "name": "WSJF (Weighted Shortest Job First) - Solidify Mod",
     "scopes": [ "vso.work", "vso.work_write" ],
     "description": "Auto calculates WSJF (weighted shortest job first) per work item and stores it in a work item field.",
-    "publisher": "MS-Agile-SAFe",
-    "id": "WSJF-extension",
+    "publisher": "solidify-labs",
+    "public": false,
+    "id": "wsjf-solidify",
     "icons": {
         "default": "marketplace/logo.png"
     },
@@ -20,14 +21,6 @@
     "content": {
         "details": {
             "path": "marketplace/details.md"
-        }
-    },
-    "links": {
-        "learn": {
-            "uri": "https://github.com/Microsoft/vsts-wsjf-extension"
-        },
-        "support": {
-            "uri": "mailto:jmarks@microsoft.com"
         }
     },
     "branding": {

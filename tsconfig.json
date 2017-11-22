@@ -5,7 +5,6 @@
     },   
     "filesGlob": [
         "src/**/*.ts",
-        "src/**/*.tsx",
-        "typings/index.d.ts"
+        "src/**/*.tsx"
     ]    
 }

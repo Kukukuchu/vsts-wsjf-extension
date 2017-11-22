@@ -3,7 +3,7 @@
 var exec = require("child_process").exec;
 
 // Package extension
-var command = `tfx extension create --overrides-file ../configs/release.json --manifest-globs vss-extension-release.json --no-prompt --json`;
+var command = `tfx extension create --root ./ --output-path ../publish/ --manifests ./vss-extension.json --overrides-file ./release.json`;
 exec(command, { 
     "cwd": "./dist"
 }, (error, stdout) => {
@@ -12,14 +12,12 @@ exec(command, {
         return;
     }
     
-    let output = JSON.parse(stdout);
-    
-    console.log(`Package created ${output.path}`);
+    console.log(`Package created`);
     
     var command = `tfx extension publish --vsix ${output.path} --no-prompt`;
     exec(command, (error, stdout) => {
         if (error) {
-            console.error(`Could not create package: '${error}'`);
+            console.error(`Could not publish package: '${error}'`);
             return;
         }
         

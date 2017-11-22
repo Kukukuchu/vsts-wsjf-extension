@@ -1,20 +1,19 @@
 {
-    "public": true,
     "files": [
         {
-            "path": "src",
+            "path": "./src",
             "addressable": true
         },
         {
-            "path": "libs",
+            "path": "./marketplace",
             "addressable": true
         },
         {
-            "path": "marketplace",
+            "path": "./img",
             "addressable": true
         },
         {
-            "path": "img",
+            "path": "./libs",
             "addressable": true
         }
     ]

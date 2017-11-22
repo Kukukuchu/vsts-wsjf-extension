@@ -5,7 +5,7 @@ import {IWorkItemFormService, WorkItemFormService} from "TFS/WorkItemTracking/Se
 import { StoredFieldReferences } from "wsjfModels";
  
 function GetStoredFields(): IPromise<StoredFieldReferences> {
-    var deferred = Q.defer();
+    var deferred = Q.defer<StoredFieldReferences>();
     VSS.getService<IExtensionDataService>(VSS.ServiceIds.ExtensionData).then((dataService: IExtensionDataService) => {
         dataService.getValue<StoredFieldReferences>("storedFields").then((storedFields:StoredFieldReferences) => {
             if (storedFields) {
@@ -41,14 +41,26 @@ function updateWSJFOnForm(storedFields:StoredFieldReferences) {
                 (matchingEffortFields.length > 0) &&
                 (matchingWSJFFields.length > 0)) {
                 service.getFieldValues([storedFields.bvField, storedFields.tcField, storedFields.rvField, storedFields.effortField]).then((values) => {
-                    var businessValue  = +values[storedFields.bvField];
-                    var timeCriticality = +values[storedFields.tcField];
-                    var rroevalue = +values[storedFields.rvField];
+                    var businessValue  = 0;
+                    if (values[storedFields.bvField]) {
+                        businessValue += +values[storedFields.bvField];
+                    }
+                    
+                    var timeCriticality = 0;
+                    if (values[storedFields.tcField]) {
+                        timeCriticality += +values[storedFields.tcField];
+                    }
+                    
+                    var rroevalue = 0;
+                    if (values[storedFields.rvField]) {
+                        rroevalue += +values[storedFields.rvField];
+                    }
+
                     var effort = +values[storedFields.effortField];
 
                     var wsjf = 0;
                     if (effort > 0) {
-                        wsjf = (businessValue + timeCriticality)/effort;
+                        wsjf = (businessValue + timeCriticality + rroevalue)/effort;
                     }
                     
                     service.setFieldValue(storedFields.wsjfField, wsjf);
@@ -67,7 +79,7 @@ function updateWSJFOnGrid(workItemId, storedFields:StoredFieldReferences):IPromi
         storedFields.wsjfField
     ];
 
-    var deferred = Q.defer();
+    var deferred = Q.defer<Contracts.WorkItem>();
 
     var client = WIT_Client.getClient();
     client.getWorkItem(workItemId, wsjfFields).then((workItem: Contracts.WorkItem) => {

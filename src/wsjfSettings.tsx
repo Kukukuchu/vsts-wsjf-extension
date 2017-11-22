@@ -16,7 +16,7 @@ export class Settings {
     private _menuBar = null;
 
     private getSortedFieldsList():IPromise<string[]> {
-        var deferred = Q.defer();
+        var deferred = Q.defer<string[]>();
         var client = WIT_Client.getClient();
         client.getFields().then((fields: Contracts.WorkItemField[]) => {
             this._fields = fields.filter(field => (field.type === Contracts.FieldType.Double || field.type === Contracts.FieldType.Integer))
@@ -67,7 +67,7 @@ export class Settings {
                     case "timeCriticality":
                         that._selectedFields.tcField = fieldReferenceName;
                         break;
-                    case "RROE-Value":
+                    case "rroevalue":
                         that._selectedFields.rvField = fieldReferenceName;
                     case "effort":
                         that._selectedFields.effortField = fieldReferenceName;
@@ -90,7 +90,7 @@ export class Settings {
         header = $("<div />").addClass("description-text bowtie").appendTo(hubContent);
         header.html(Utils_string.format(descriptionText,
 
-        $("<img src='http://www.scaledagileframework.com/wp-content/uploads/2014/07/Figure-2.-A-formula-for-calculating-WSJF.png' />").addClass("description-image").appendTo(hubContent);
+        $("<img src='http://www.scaledagileframework.com/wp-content/uploads/2014/07/Figure-2.-A-formula-for-calculating-WSJF.png' />").addClass("description-image").appendTo(hubContent)));
         
         descriptionText = "You must add a custom decimal field from the {0} to each work item type you wish to compute WSJF.";
         header = $("<div />").addClass("description-text bowtie").appendTo(hubContent);
