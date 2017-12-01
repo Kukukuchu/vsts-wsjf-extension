@@ -131,6 +131,9 @@ export class Settings {
         let effortContainer = $("<div />").addClass("settings-control").appendTo(container);
         $("<label />").text("Effort Field").appendTo(effortContainer);
 
+        let costOfDelay = $("<div />").addClass("settings-control").appendTo(container);
+        $("<label />").text("Cost of Delay Field").appendTo(costOfDelay);  
+
         let wsjfContainer = $("<div />").addClass("settings-control").appendTo(container);
         $("<label />").text("WSJF Field").appendTo(wsjfContainer);            
 
@@ -157,7 +160,7 @@ export class Settings {
                     Controls.create(Combo, tcContainer, this.getComboOptions("timeCriticality", fieldList, this._selectedFields.tcField));
                     Controls.create(Combo, rvContainer, this.getComboOptions("rroevalue", fieldList, this._selectedFields.rvField));
                     Controls.create(Combo, effortContainer, this.getComboOptions("effort", fieldList, this._selectedFields.effortField));
-                    Controls.create(Combo, wsjfContainer, this.getComboOptions("costOfDelay", fieldList, this._selectedFields.costOfDelay));
+                    Controls.create(Combo, costOfDelay, this.getComboOptions("costOfDelay", fieldList, this._selectedFields.costOfDelay));
                     Controls.create(Combo, wsjfContainer, this.getComboOptions("wsjf", fieldList, this._selectedFields.wsjfField));
                     this.updateSaveButton();
 

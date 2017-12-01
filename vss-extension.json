@@ -1,6 +1,6 @@
 {
     "manifestVersion": 1,
-    "version": "1.1.0",
+    "version": "1.1.2",
     "name": "WSJF (Weighted Shortest Job First) - Solidify Mod",
     "scopes": [ "vso.work", "vso.work_write" ],
     "description": "Auto calculates WSJF (weighted shortest job first) per work item and stores it in a work item field.",
